@@ -16,10 +16,14 @@ namespace ToDoApp.Controllers
             _logger = logger;
             _toDoOperations = toDoOperations;
         }
-
+        //Should not return ToDoEntity need to map result need fix.
         [HttpGet("listItems")]
         public async Task<ActionResult<List<ToDoDTO>>> GetToDoItems(string listName)
         {
+            if(string.IsNullOrEmpty(listName))
+            {
+                return BadRequest("List name can't be null or empty");
+            }
             var result = await _toDoOperations.GetToDoItems(listName);
             if (result == null || !result.Any())
             {
@@ -44,6 +48,10 @@ namespace ToDoApp.Controllers
         [HttpPost("{toDoItemIndex}/check")]
         public async Task<ActionResult> CheckToDoMark(string listName, int toDoItemIndex)
         {
+            if (string.IsNullOrEmpty(listName))
+            {
+                return BadRequest("Name of the list can't be empty");
+            }
             var done = await _toDoOperations.CheckToDoMark(listName, toDoItemIndex);
             if (!done)
             {
@@ -54,6 +62,10 @@ namespace ToDoApp.Controllers
         [HttpPost("{toDoItemIndex}/uncheck")]
         public async Task<ActionResult> UnCheckToDoMark(string listName, int toDoItemIndex)
         {
+            if (string.IsNullOrEmpty(listName))
+            {
+                return BadRequest("Name of the list can't be empty");
+            }
             var done = await _toDoOperations.UnCheckToDoMark(listName, toDoItemIndex);
             if (!done)
             {
@@ -64,6 +76,10 @@ namespace ToDoApp.Controllers
         [HttpPost("{toDoItemIndex}/updatedescription")]
         public async Task<ActionResult> UpdateToDoDescription(string listName, int toDoItemIndex,string description)
         {
+            if (string.IsNullOrEmpty(listName))
+            {
+                return BadRequest("Name of the list can't be empty");
+            }
             var done = await _toDoOperations.UpdateToDoDescription(listName,toDoItemIndex,description);
             if (!done)
             {
@@ -74,6 +90,10 @@ namespace ToDoApp.Controllers
         [HttpPost("addToDo")]
         public async Task<ActionResult> AddToDo(string listName, ToDoDTO todo)
         {
+            if (string.IsNullOrEmpty(listName))
+            {
+                return BadRequest("Listname can't be null or empty");
+            }
             var item = new ToDoEntity
             {
                 Description = todo.Description,
@@ -89,6 +109,10 @@ namespace ToDoApp.Controllers
         [HttpPost("{index}/delete")]
         public async Task<ActionResult> DeleteToDoFromList(string listName, int index)
         {
+            if (string.IsNullOrEmpty(listName))
+            {
+                return BadRequest("Listname can't be null or empty");
+            }
             var done = await _toDoOperations.DeleteToDo(listName, index);
             if (!done)
             {
@@ -99,6 +123,10 @@ namespace ToDoApp.Controllers
         [HttpPost("{index}/move")]
         public async Task<ActionResult> MoveToDoToAnotherList(string listName, int index, string toList)
         {
+            if (string.IsNullOrEmpty(listName) || string.IsNullOrEmpty(toList)) 
+            {
+                return BadRequest("Lists can't be empty");
+            }
             var done = await _toDoOperations.MoveToDo(listName, index,toList);
             if (!done)
             {
